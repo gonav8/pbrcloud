@@ -1,0 +1,23 @@
+id: china-core-apps
+app: China Core Apps
+category: china
+action: direct-wan
+confidence: 1.0
+domains:
+  - alipay.com
+  - baidu.com
+  - jd.com
+  - netease.com
+  - qq.com
+  - sina.com.cn
+  - taobao.com
+  - weixin.qq.com
+resolver: 119.29.29.29
+last_verified: 2026-05-25
+source:
+  type: manual
+  url: null
+review:
+  status: approved
+  reviewer: gonav8
+notes: Initial seed list for ZTE MF287Plus direct-WAN bypass testing.

@@ -1,0 +1,49 @@
+name: Validate and Compile
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile tools/compile-lists.py
+
+      - name: Run compiler
+        run: |
+          python tools/compile-lists.py
+
+      - name: Validate compiled output formatting
+        run: |
+          if grep -q " " data/compiled/direct-domains.txt; then
+            echo "Error: direct-domains.txt contains spaces"
+            exit 1
+          fi
+
+      - name: Verify checksums
+        run: |
+          cd data/compiled && sha256sum -c sha256sums.txt
+
+      - name: Fail if compiled output changes without being committed
+        run: |
+          if [ -n "$(git status --porcelain data/compiled)" ]; then
+            echo "Error: Compiled files are out of sync. Run tools/compile-lists.py locally."
+            exit 1
+          fi
